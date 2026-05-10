@@ -52,6 +52,8 @@ alias launch-vscode='podman run -it -d --rm \
     -v $DEV_CONTAINER_HOME:/home/dev:U,Z \
     -v dev-env-data:/home/dev/projects \
     my-dev-image:dev && podman exec -it my-dev-container code'
+
+alias resume-vscode='podman exec -it my-dev-container code'
 ```
 
 After adding the aliases, reload your shell configuration file:
@@ -64,3 +66,4 @@ Now you can use:
 - `start-workspace` to start the container.
 - `launch-vscode` to launch VS code from the containerized env.
 - `stop-workspace` to stop the container.
+- `resume-vscode` to resume the VS code session after you closed it. It assumes the workspace container is still running
