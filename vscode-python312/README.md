@@ -3,7 +3,7 @@
 ## Build the Containerized Workspace image
 
 ```sh
-podman build -t my-workspace:dev -f workspace.dockerfile .
+podman build -t my-dev-image:dev -f workspace.dockerfile .
 ```
 
 ## Run the Containerized Workspace
