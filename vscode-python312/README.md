@@ -1,5 +1,11 @@
 # Containerized VS Code Development Environment
 
+## Build the Containerized Workspace image
+
+```sh
+podman build -t my-workspace:dev -f workspace.dockerfile .
+```
+
 ## Run the Containerized Workspace
 
 Before starting the container, I suggest to:
