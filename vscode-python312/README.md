@@ -57,9 +57,9 @@ alias launch-vscode='podman run -it -d --rm \
     -v $XAUTHORITY:/home/dev/.Xauthority:ro \
     -v $DEV_CONTAINER_HOME:/home/dev:U,Z \
     -v dev-env-data:/home/dev/projects \
-    my-dev-image:dev && podman exec -it my-dev-container code'
+    my-dev-image:dev && podman exec -it my-dev-container code --no-sandbox --disable-gpu'
 
-alias resume-vscode='podman exec -it my-dev-container code'
+alias resume-vscode='podman exec -it my-dev-container code --no-sandbox --disable-gpu'
 ```
 
 After adding the aliases, reload your shell configuration file:
