@@ -1,34 +1,40 @@
 # Use official Python 3.12 on Debian Bookworm
-FROM python:3.12-bookworm
+FROM fedora:45
 
 # Avoid prompts during installation
 ENV DEBIAN_FRONTEND=noninteractive
 ARG USERNAME=dev
 
 # Install system dependencies, including 'patch'
-RUN apt-get update && apt-get install -y \
+RUN dnf update -y && dnf install -y \
+    python3.12 \
+    python3-pip \
     curl \
-    gpg \
     git \
     patch \
     sudo \
-    libnss3 \
-    libatk1.0-0 \
-    libatk-bridge2.0-0 \
-    libcups2 \
-    libdrm2 \
-    libgtk-3-0 \
-    libgbm1 \
-    libasound2 \
-    && rm -rf /var/lib/apt/lists/*
+    gpg \
+    # VS Code GUI dependencies for Fedora
+    nss \
+    at-spi2-atk \
+    libX11-xcb \
+    libdrm \
+    gtk3 \
+    mesa-libgbm \
+    alsa-lib \
+    libxshmfence \
+    libxkbcommon \
+    && dnf clean all
 
 # Install VS Code
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg && \
-    install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/ && \
-    echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list && \
-    apt-get update && apt-get install -y code && \
-    rm microsoft.gpg
+# Install VS Code using the RPM repository
+RUN rpm --import https://packages.microsoft.com/keys/microsoft.asc && \
+    sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo' && \
+    dnf install -y code && \
+    curl -LsSf https://astral.sh/uv/install.sh | sh
 
+# Ensure UV is in the path for the dev user
+ENV PATH="/home/${USERNAME}/.local/bin:${PATH}"
 # Create a non-root user 'deck' to match SteamOS (prevents permission headaches)
 RUN useradd -m -s /bin/bash ${USERNAME} 
 #&& \
