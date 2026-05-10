@@ -9,7 +9,7 @@ This repository provides pre-configured **containerized development environments
 ### 1. **VS Code Development Environment**
 A containerized VS Code environment with essential tools and configurations for general-purpose development.
 
-- **Instructions**: [VS Code Dev Environment](./containerized-vscode/README.md)
+- **Instructions**: [VS Code Dev Environment](./vscode-python312/README.md)
 
 ---
 
