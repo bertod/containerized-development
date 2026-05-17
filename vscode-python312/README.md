@@ -14,6 +14,8 @@ Before starting the container, I suggest to:
 
 Both are optional, not functionally needed. If you don't use them, update the 
 
+Before starting the container, run `xhost +local:docker` which will allow the apps from inside the container to launch GUI.
+
 To start the containerized development environment, use the following command:
 
 ```sh
