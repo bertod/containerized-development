@@ -1,5 +1,7 @@
 # Containerized VS Code Development Environment
 
+Note: as alternative, you could use the the ollama docker image. Docs available [here](https://docs.ollama.com/docker)
+
 ## Build the Containerized Workspace image
 
 ```sh
@@ -14,6 +16,7 @@ podman run --replace --device /dev/kfd --device /dev/dri --net=host -v dev-ollam
 ```
 You can add `-d` to run in detach mode.
 The server exposes an OpenAI endpoint at `127.0.0.1:11434/v1`
+If you have an NVIDIA GPU or AMD ROCm, refer to [ollama docker docs](https://docs.ollama.com/docker)
 
 ## Pull models
 ```sh
