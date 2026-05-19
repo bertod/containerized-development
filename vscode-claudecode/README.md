@@ -77,9 +77,12 @@ alias claude-workspace='podman run -it --rm \
 ```
 
 # Alias to stop the container
+```sh
 alias stop-workspace='podman stop my-dev-container'
+```
 
-# Alias to launch the containerized VS Code
+# Aliases to launch the containerized Applications
+```sh
 alias launch-vscode='podman run -it --rm \
     --name my-dev-container \
     --net=host \
