@@ -25,12 +25,12 @@ To start the containerized development environment, use the following command:
 
 ```sh
 podman run -it --rm \
-    --name my-dev-container \
+    --name vscode-container \
     --net=host \
     --env="DISPLAY" \
-    --userns=keep-id \ # without it, gcloud(?) fails to read .bashrc
+    --userns=keep-id \
     --env="XAUTHORITY=/tmp/.Xauthority" \
-    --ipc=host \                          # optional: needed on some distros (e.g. Fedora) for MIT-SHM; not needed on SteamOS
+    --ipc=host \
     -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
     -v $XAUTHORITY:/tmp/.Xauthority:ro,Z \
     -v $DEV_CONTAINER_HOME:/home/dev:U,Z \
@@ -60,60 +60,61 @@ Add the following aliases to your shell configuration file (e.g., `~/.bashrc`, `
 
 ```sh
 export DEV_CONTAINER_HOME="$HOME/dev-env-home"
+export VERTEX_ENV_FILE="$HOME/.vertex-auth-env"
 alias claude-workspace='podman run -it --rm \
-    --name my-dev-container \
+    --name vscode-container \
     --net=host \
     --env="DISPLAY" \
-    --userns=keep-id \ # without it, gcloud(?) fails to read .bashrc
+    --userns=keep-id \
     --env="XAUTHORITY=/tmp/.Xauthority" \
-    --ipc=host \                          # optional: needed on some distros (e.g. Fedora) for MIT-SHM; not needed on SteamOS
+    --ipc=host \
     -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
     -v $XAUTHORITY:/tmp/.Xauthority:ro,Z \
     -v $DEV_CONTAINER_HOME:/home/dev:U,Z \
     -v dev-env-data:/home/dev/projects:Z \
     -v /tmp/application_default_credentials.json:/home/dev/.config/gcloud/application_default_credentials.json:Z \
-    --env-file .auth-env \ # contains the Vertex env variable and anyother env variable you need for your scope
-    my-dev-image:dev'
+    --env-file ${VERTEX_ENV_FILE} \
+    localhost/vscode-container'
 ```
 
 # Alias to stop the container
 ```sh
-alias stop-workspace='podman stop my-dev-container'
+alias stop-workspace='podman stop vscode-container'
 ```
 
 # Aliases to launch the containerized Applications
 ```sh
 alias launch-vscode='podman run -it --rm \
-    --name my-dev-container \
+    --name vscode-container \
     --net=host \
     --env="DISPLAY" \
-    --userns=keep-id \ # without it, gcloud(?) fails to read .bashrc
+    --userns=keep-id \
     --env="XAUTHORITY=/tmp/.Xauthority" \
-    --ipc=host \                          # optional: needed on some distros (e.g. Fedora) for MIT-SHM; not needed on SteamOS
+    --ipc=host \
     -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
     -v $XAUTHORITY:/tmp/.Xauthority:ro,Z \
     -v $DEV_CONTAINER_HOME:/home/dev:U,Z \
     -v dev-env-data:/home/dev/projects:Z \
     -v /tmp/application_default_credentials.json:/home/dev/.config/gcloud/application_default_credentials.json:Z \
-    --env-file .auth-env \ # contains the Vertex env variable and anyother env variable you need for your scope
-    my-dev-image:dev&& podman exec -it my-dev-container code --no-sandbox --disable-dev-shm-usage'
+    --env-file ${VERTEX_ENV_FILE} \
+    localhost/vscode-container && podman exec -it vscode-container code --no-sandbox --disable-dev-shm-usage'
 
-alias resume-vscode='podman exec -it my-dev-container code --no-sandbox --disable-dev-shm-usage'
+alias resume-vscode='podman exec -it vscode-container code --no-sandbox --disable-dev-shm-usage'
 
 alias launch-claude='podman run -it --rm \
-    --name my-dev-container \
+    --name vscode-container \
     --net=host \
     --env="DISPLAY" \
-    --userns=keep-id \ # without it, gcloud(?) fails to read .bashrc
+    --userns=keep-id \
     --env="XAUTHORITY=/tmp/.Xauthority" \
-    --ipc=host \                          # optional: needed on some distros (e.g. Fedora) for MIT-SHM; not needed on SteamOS
+    --ipc=host \
     -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
     -v $XAUTHORITY:/tmp/.Xauthority:ro,Z \
     -v $DEV_CONTAINER_HOME:/home/dev:U,Z \
     -v dev-env-data:/home/dev/projects:Z \
     -v /tmp/application_default_credentials.json:/home/dev/.config/gcloud/application_default_credentials.json:Z \
-    --env-file .auth-env \ # contains the Vertex env variable and anyother env variable you need for your scope
-    my-dev-image:dev&& podman exec -it my-dev-container claude'
+    --env-file ${VERTEX_ENV_FILE} \
+    localhost/vscode-container && podman exec -it vscode-container claude'
 ```
 
 After adding the aliases, reload your shell configuration file:
