@@ -21,15 +21,24 @@ podman run -it --rm \
     --name my-dev-container \
     --net=host \
     --env="DISPLAY" \
-    -v $XAUTHORITY:/home/dev/.Xauthority:ro \
+    --env="XAUTHORITY=/tmp/.Xauthority" \
+    --ipc=host \                          # optional: needed on some distros (e.g. Fedora) for MIT-SHM; not needed on SteamOS
+    -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
+    -v $XAUTHORITY:/tmp/.Xauthority:ro,Z \
     -v ./dev-env-home:/home/dev:U,Z \
     -v dev-env-data:/home/dev/projects:Z \
     my-dev-image:dev
 ```
 The container's `/bin/bash` shell will start.
 
+> **Note:** The Xauthority file must be mounted outside of the home directory (`/tmp/.Xauthority`)
+> because the home directory bind-mount (`/home/dev`) would shadow anything mounted inside it.
+
 ### Launch VS Code
-run `code` in the  bash shell of the container
+Run in the bash shell of the container:
+```sh
+code --no-sandbox --disable-dev-shm-usage
+```
 
 ## Aliases for quicker launch
 
@@ -40,8 +49,11 @@ export DEV_CONTAINER_HOME="$HOME/dev-env-home"
 alias start-workspace='podman run -it --rm \
     --name my-dev-container \
     --net=host \
+    --ipc=host \
     --env="DISPLAY" \
-    -v $XAUTHORITY:/home/dev/.Xauthority:ro \
+    --env="XAUTHORITY=/tmp/.Xauthority" \
+    -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
+    -v $XAUTHORITY:/tmp/.Xauthority:ro,Z \
     -v $DEV_CONTAINER_HOME:/home/dev:U,Z \
     -v dev-env-data:/home/dev/projects \
     my-dev-image:dev'
@@ -53,13 +65,16 @@ alias stop-workspace='podman stop my-dev-container'
 alias launch-vscode='podman run -it -d --rm \
     --name my-dev-container \
     --net=host \
+    --ipc=host \
     --env="DISPLAY" \
-    -v $XAUTHORITY:/home/dev/.Xauthority:ro \
+    --env="XAUTHORITY=/tmp/.Xauthority" \
+    -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
+    -v $XAUTHORITY:/tmp/.Xauthority:ro,Z \
     -v $DEV_CONTAINER_HOME:/home/dev:U,Z \
     -v dev-env-data:/home/dev/projects \
-    my-dev-image:dev && podman exec -it my-dev-container code --no-sandbox --disable-gpu'
+    my-dev-image:dev && podman exec -it my-dev-container code --no-sandbox --disable-dev-shm-usage'
 
-alias resume-vscode='podman exec -it my-dev-container code --no-sandbox --disable-gpu'
+alias resume-vscode='podman exec -it my-dev-container code --no-sandbox --disable-dev-shm-usage'
 ```
 
 After adding the aliases, reload your shell configuration file:
