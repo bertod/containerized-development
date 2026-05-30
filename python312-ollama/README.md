@@ -1,4 +1,4 @@
-# Containerized VS Code Development Environment
+# Containerized Ollama
 
 Note: as alternative, you could use the the ollama docker image. Docs available [here](https://docs.ollama.com/docker)
 
