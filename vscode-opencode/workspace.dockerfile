@@ -22,6 +22,7 @@ RUN dnf update -y && dnf install -y \
     libxshmfence \
     libxkbcommon \
     tmux \
+    gcc \
     && dnf clean all
 
 # Install VS Code using the RPM repository
