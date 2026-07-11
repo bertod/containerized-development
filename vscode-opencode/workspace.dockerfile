@@ -30,6 +30,7 @@ RUN rpm --import https://packages.microsoft.com/keys/microsoft.asc && \
     sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo' && \
     dnf install -y code && \
     curl -LsSf https://astral.sh/uv/install.sh | sh && \
+    uv python pin 3.12 && \
     curl -fsSL https://opencode.ai/install | bash
 
 RUN useradd -m -s /bin/bash ${USERNAME} && chown -R ${USERNAME}:0 ${HOME}
