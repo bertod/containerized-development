@@ -33,7 +33,8 @@ RUN rpm --import https://packages.microsoft.com/keys/microsoft.asc && \
     curl -LsSf https://astral.sh/uv/install.sh | sh && \
     uv python pin 3.12
 
-ENV HOME=/home/${USERNAME} # to install opencode in user space
+# set HOME here to install opencode in user space
+ENV HOME=/home/${USERNAME}
 RUN curl -fsSL https://opencode.ai/v2/install | bash
 
 RUN useradd -m -s /bin/bash ${USERNAME}
