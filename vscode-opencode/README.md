@@ -9,7 +9,6 @@ podman build -t my-dev-image:dev -f workspace.dockerfile .
 ## Run the Containerized Workspace
 
 Before starting the container, I suggest to:
-- create a directory to mount as HOME in the container (e.g., dev-env-home)
 - create a volume to persist storage over different runs (`podman volume create dev-env-data`)
 - IF you use Anthropic via Google Vertex:
     - ensure you're logged in on the host
@@ -33,16 +32,12 @@ podman run -it --rm \
     --ipc=host \
     -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
     -v $XAUTHORITY:/tmp/.Xauthority:ro,Z \
-    -v $DEV_CONTAINER_HOME:/home/dev:U,Z \
     -v dev-env-data:/home/dev/projects:Z \
     -v /tmp/application_default_credentials.json:/home/dev/.config/gcloud/application_default_credentials.json:Z \
     --env-file .auth-env \ # contains the Vertex env variable and anyother env variable you need for your scope
     my-dev-image:dev
 ```
 The container's `/bin/bash` shell will start.
-
-> **Note:** The Xauthority file must be mounted outside of the home directory (`/tmp/.Xauthority`)
-> because the home directory bind-mount (`/home/dev`) would shadow anything mounted inside it.
 
 ### Launch VS Code
 Run in the bash shell of the container:
@@ -59,7 +54,6 @@ opencode
 Add the following aliases to your shell configuration file (e.g., `~/.bashrc`, `~/.zshrc`):
 
 ```sh
-export DEV_CONTAINER_HOME="$HOME/dev-env-home"
 export VERTEX_ENV_FILE="$HOME/.vertex-auth-env"
 alias opencode-workspace='podman run -it --rm \
     --name opencode \
@@ -70,7 +64,6 @@ alias opencode-workspace='podman run -it --rm \
     --ipc=host \
     -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
     -v $XAUTHORITY:/tmp/.Xauthority:ro,Z \
-    -v $DEV_CONTAINER_HOME:/home/dev:U,Z \
     -v dev-env-data:/home/dev/projects:Z \
     -v /tmp/application_default_credentials.json:/home/dev/.config/gcloud/application_default_credentials.json:Z \
     --env-file ${VERTEX_ENV_FILE} \
@@ -93,7 +86,6 @@ alias launch-vscode='podman run -it --rm \
     --ipc=host \
     -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
     -v $XAUTHORITY:/tmp/.Xauthority:ro,Z \
-    -v $DEV_CONTAINER_HOME:/home/dev:U,Z \
     -v dev-env-data:/home/dev/projects:Z \
     -v /tmp/application_default_credentials.json:/home/dev/.config/gcloud/application_default_credentials.json:Z \
     --env-file ${VERTEX_ENV_FILE} \
@@ -110,7 +102,6 @@ alias launch-opencode='podman run -it --rm \
     --ipc=host \
     -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
     -v $XAUTHORITY:/tmp/.Xauthority:ro,Z \
-    -v $DEV_CONTAINER_HOME:/home/dev:U,Z \
     -v dev-env-data:/home/dev/projects:Z \
     -v /tmp/application_default_credentials.json:/home/dev/.config/gcloud/application_default_credentials.json:Z \
     --env-file ${VERTEX_ENV_FILE} \
