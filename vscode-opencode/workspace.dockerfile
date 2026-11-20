@@ -25,6 +25,7 @@ RUN dnf update -y && dnf install -y \
     libxkbcommon \
     tmux \
     gcc \
+    zsh \
     && dnf clean all
 
 RUN rpm --import https://packages.microsoft.com/keys/microsoft.asc && \
@@ -38,7 +39,12 @@ ENV HOME=/home/${USERNAME}
 RUN curl -fsSL https://opencode.ai/v2/install | bash
 
 RUN useradd -m -s /bin/bash ${USERNAME}
-RUN chown -R ${USERNAME}:${USERNAME} ${HOME} && chmod 755 ${HOME}
+RUN dnf install -y util-linux-user && \
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" && \
+    git clone https://github.com/zsh-users/zsh-autosuggestions.git $ZSH_CUSTOM/plugins/zsh-autosuggestions
+COPY .zshrc $HOME
+
+RUN chown -R ${USERNAME}:${USERNAME} ${HOME} && chmod 755 ${HOME} && chsh -s $(which zsh) ${USERNAME}
 USER ${USERNAME}
 ENV PATH="/home/${USERNAME}/.local/bin:/usr/local/bin/:${HOME}/.opencode/bin:${PATH}"
 
